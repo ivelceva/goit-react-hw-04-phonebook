@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ContactForm from './contactForm/ContactForm';
 import Filter from './filter/Filter';
 import ContactList from './contactList/ContactList';
@@ -9,12 +9,18 @@ const App = () => {
   const [contacts, setContacts] = useState([]);
   const [filter, setFilter] = useState('');
 
-  useEffect(() => {
+
+  
+  const loadContactsFromLocalStorage = useCallback(() => {
     const savedContacts = localStorage.getItem(LOCALSTORAGE_KEY);
     if (savedContacts !== null) {
       setContacts(JSON.parse(savedContacts));
     }
   }, []);
+
+  useEffect(() => {
+    loadContactsFromLocalStorage();
+  }, [loadContactsFromLocalStorage]);
 
   useEffect(() => {
     localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(contacts));
@@ -42,9 +48,7 @@ const App = () => {
   };
 
   const filterContact = (name, filter) => {
-    let nameLow = name.toLowerCase();
-    let filterLow = filter.toLowerCase();
-    return nameLow.indexOf(filterLow) >= 0;
+    return name.toLowerCase().includes(filter.toLowerCase());
   };
 
   const contactSearch = contacts.filter(user =>
@@ -71,3 +75,28 @@ const App = () => {
 export default App;
 
 
+
+
+
+
+
+  // useEffect(() => {
+  //   const savedContacts = localStorage.getItem(LOCALSTORAGE_KEY);
+  //   if (savedContacts !== null) {
+  //     setContacts(JSON.parse(savedContacts));
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(contacts));
+  // }, [contacts]);
+
+  // const filterContact = (name, filter) => {
+  //   let nameLow = name.toLowerCase();
+  //   let filterLow = filter.toLowerCase();
+  //   return nameLow.indexOf(filterLow) >= 0;
+  // };
+
+  // const contactSearch = contacts.filter(user =>
+  //   filterContact(user.name, filter)
+  // );
